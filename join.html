@@ -267,10 +267,18 @@
   // ── Copy deferred deep link to clipboard ─────────────────────────────────────
   // When the app isn't installed, the user installs it and on first launch
   // the app reads the clipboard to recover the join intent.
+  //
+  // IMPORTANT: navigator.clipboard.writeText() (and the execCommand fallback)
+  // only succeed when called synchronously inside a real user gesture (a
+  // click/tap handler). Browsers — Safari/iOS especially — silently reject
+  // clipboard writes triggered from a setTimeout callback with no direct
+  // user-gesture chain, which is exactly how this was previously only
+  // invoked (from showStoreFallback(), itself called from a timer). That's
+  // why the code never actually landed in the clipboard for most users.
   function copyDeferredLink() {
     try {
       navigator.clipboard.writeText(CLIPBOARD_PREFIX + webUrl).catch(() => {
-        // Fallback for browsers that block clipboard without interaction
+        // Fallback for browsers that block the async Clipboard API
         const el = document.createElement('textarea');
         el.value = CLIPBOARD_PREFIX + webUrl;
         el.style.position = 'fixed';
@@ -288,18 +296,29 @@
   const isIOS     = /iphone|ipad|ipod/i.test(navigator.userAgent);
   const isAndroid = /android/i.test(navigator.userAgent);
 
-  document.getElementById('appStoreBtn').href  = APP_STORE_URL;
-  document.getElementById('playStoreBtn').href = PLAY_STORE_URL;
-  document.getElementById('openAppLink').href  = appDeepLink;
+  const appStoreBtn  = document.getElementById('appStoreBtn');
+  const playStoreBtn = document.getElementById('playStoreBtn');
+  const openAppLink  = document.getElementById('openAppLink');
+
+  appStoreBtn.href  = APP_STORE_URL;
+  playStoreBtn.href = PLAY_STORE_URL;
+  openAppLink.href  = appDeepLink;
+
+  // Copy on the actual tap — this is a real user gesture, so the clipboard
+  // write is guaranteed to be allowed (unlike the timeout-triggered attempt
+  // below, which is best-effort only).
+  [appStoreBtn, playStoreBtn, openAppLink].forEach((btn) => {
+    btn.addEventListener('click', copyDeferredLink);
+  });
 
   // On iOS hide Play Store; on Android hide App Store
   if (isIOS) {
-    document.getElementById('playStoreBtn').parentElement.style.display = 'none';
-    document.getElementById('playStoreBtn').style.display = 'none';
+    playStoreBtn.parentElement.style.display = 'none';
+    playStoreBtn.style.display = 'none';
     const divider = document.querySelector('.divider');
     if (divider) divider.style.display = 'none';
   } else if (isAndroid) {
-    document.getElementById('appStoreBtn').style.display = 'none';
+    appStoreBtn.style.display = 'none';
     const divider = document.querySelector('.divider');
     if (divider) divider.style.display = 'none';
   }
@@ -310,7 +329,7 @@
     document.getElementById('storeButtons').classList.add('visible');
     document.getElementById('alreadyInstalled').style.display = 'block';
     subtext.textContent = 'Get KeyConnect+ to join your team instantly.';
-    copyDeferredLink();
+    copyDeferredLink(); // best-effort — may be blocked without a user gesture
   }
 
   // Try the custom scheme. If the app opens, the page goes to background and the
