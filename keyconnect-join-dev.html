@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're Invited — KeyConnect+ (Dev)</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="description" content="You've been invited to join a team on KeyConnect+ (internal test build).">
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #111110;
+      --white: #ffffff;
+      --gray-50: #f9f9f8;
+      --gray-100: #f1f0ee;
+      --gray-200: #e3e2df;
+      --gray-400: #9b9a95;
+      --gray-600: #5c5b57;
+      --accent: #1a6ef7;
+      --accent-light: #e8f0fe;
+      --premium: #7c3aed;
+      --premium-light: #ede9fe;
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 16px;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #111110;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo img { height: 32px; width: auto; display: block; background: #ffffff; padding: 4px 8px; border-radius: 8px; }
+    @media (max-width: 768px) { .nav { padding: 0 20px; } }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      background: var(--premium-light);
+      padding: 64px 40px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .invite-wrap { max-width: 520px; width: 100%; margin: 0 auto; text-align: center; }
+
+    .app-icon {
+      width: 88px; height: 88px;
+      border-radius: 22px;
+      margin: 0 auto 24px;
+      display: block;
+    }
+
+    .invite-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--premium);
+      background: #fff;
+      border: 1px solid #d8d0f5;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .dev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #b45309;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .invite-label {
+      font-size: 16px;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+
+    .team-name {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 16px;
+      word-break: break-word;
+      line-height: 1.15;
+    }
+    .team-name span { color: var(--premium); }
+
+    .invite-sub {
+      font-size: 16px;
+      color: var(--gray-600);
+      line-height: 1.7;
+      max-width: 420px;
+      margin: 0 auto 36px;
+    }
+
+    /* ── CARD ── */
+    .invite-card {
+      background: var(--white);
+      border: 1px solid #d8d0f5;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .invite-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    /* Open in app */
+    .btn-open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: var(--black);
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-bottom: 16px;
+      text-decoration: none;
+    }
+    .btn-open:hover { opacity: 0.85; }
+    .whatsapp-hint {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: #166534;
+      line-height: 1.5;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 16px;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+    .divider span { font-size: 12px; color: var(--gray-400); white-space: nowrap; }
+
+    .store-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .btn-app {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px; border-radius: var(--radius);
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      transition: opacity 0.15s; cursor: pointer; text-decoration: none;
+    }
+    .btn-firebase { background: #FFA000; color: #fff; }
+    .btn-app:hover { opacity: 0.8; }
+    .btn-app svg { width: 18px; height: 18px; }
+
+    .distribution-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    #status { margin-top: 16px; font-size: 13px; color: var(--gray-600); min-height: 20px; text-align: center; }
+
+    @media (max-width: 480px) {
+      main { padding: 40px 20px 60px; }
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 28px 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .footer-copy { font-size: 13px; color: rgba(255,255,255,0.4); }
+    @media (max-width: 640px) { .footer { padding: 24px 20px; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/KC_125_75.png" alt="KeyChainApps" height="38">
+  </a>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <div class="invite-wrap">
+
+    <img src="/icon-512x512.png" alt="KeyConnect+" class="app-icon">
+
+    <div class="invite-badge" id="invite-badge">🏆 Team Invitation</div><br>
+    <div class="dev-badge">🧪 Internal test build</div>
+
+    <p class="invite-label" id="invite-label">You're invited to join</p>
+    <h1 class="team-name" id="team-name">a <span>team</span></h1>
+
+    <p class="invite-sub">Open KeyConnect+ (Dev) to accept this invitation and connect with your teammates.</p>
+
+    <div class="invite-card">
+      <div class="invite-card-title">Join now</div>
+
+      <a id="btn-open" class="btn-open" href="#">
+        ⚡ Open in KeyConnect+ (Dev)
+      </a>
+      <div class="whatsapp-hint" id="whatsapp-hint">
+        📱 <strong>Opened from WhatsApp?</strong> Tap the menu (⋮ on Android · Share on iOS) and choose <strong>Open in browser</strong> — then tap the button above.
+      </div>
+
+      <div class="divider"><span>Don't have the test build yet?</span></div>
+
+      <div class="store-row">
+        <a href="https://appdistribution.firebase.dev/i/d8935f761a51a487" class="btn-app btn-firebase" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 20h14v-2H5v2zm0-10h4v6h6v-6h4l-7-7-7 7z"></path></svg>
+          Install via Firebase App Distribution
+        </a>
+      </div>
+      <p class="distribution-note">This is an internal test build, not on the App Store or Google Play. You must be added as a tester in Firebase App Distribution to install it — the same email this invite was sent to should already have access.</p>
+
+      <div id="status"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-copy">© 2026 KeyChainApps Technology Inc. — Internal build, not for public distribution.</div>
+</footer>
+
+<script>
+  var params = new URLSearchParams(window.location.search);
+  var type   = params.get('kc') || params.get('type') || 'team';
+  var team   = params.get('team') || '';
+  // Referral code param name differs by link type (see DeepLinkPayload in
+  // the app): pure referral links carry it as "code", team-invite links
+  // carry an optional referrer as "ref".
+  var ref    = (type === 'ref' ? params.get('code') : params.get('ref')) || '';
+  var name   = params.get('name') || '';
+  // Set only on a person-specific email invite — lets SignUpScreen pre-fill
+  // and lock the email field so the invite can only be redeemed by them.
+  var email  = params.get('email') || '';
+
+  if (name) {
+    document.getElementById('team-name').innerHTML = decodeURIComponent(name).replace(/</g,'&lt;');
+  }
+  if (type === 'ref') {
+    document.getElementById('invite-badge').textContent = '🎁 Referral Invite';
+    document.getElementById('invite-label').textContent = "You've been referred to";
+    document.getElementById('team-name').innerHTML = '<span>KeyConnect+</span>';
+  }
+
+  function buildAppUrl() {
+    // Same custom scheme as prod (Info.plist registers "keyconnect" once,
+    // shared by both flavors) — whichever KeyConnect+ build is installed
+    // handles this.
+    var url = 'keyconnect://join?kc=' + encodeURIComponent(type);
+    if (team) url += '&team=' + encodeURIComponent(team);
+    // Re-emit under the same param name the app expects for this link type.
+    if (ref)   url += (type === 'ref' ? '&code=' : '&ref=') + encodeURIComponent(ref);
+    if (name)  url += '&name=' + encodeURIComponent(name);
+    if (email) url += '&email=' + encodeURIComponent(email);
+    return url;
+  }
+
+  // Detect WhatsApp / Facebook / Instagram in-app browsers
+  function isInAppBrowser() {
+    var ua = navigator.userAgent || '';
+    return /WhatsApp|FBAN|FBAV|Instagram|LinkedInApp/i.test(ua);
+  }
+
+  // Deferred deep link: a real deep link can't survive the Firebase App
+  // Distribution detour when the app isn't installed yet, so copy this
+  // page's full URL (with the referral/team code intact) to the clipboard
+  // before the user leaves for the install page. The app checks the
+  // clipboard for this "keyconnect-join:" prefix on first launch after
+  // install and applies the code automatically (see
+  // DeepLinkService.readClipboard()).
+  function copyJoinLinkToClipboard() {
+    var text = 'keyconnect-join:' + window.location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function () {});
+    }
+  }
+  // Copy proactively on page load too — don't rely solely on the user
+  // clicking the distribution button. Some testers tap "Open in
+  // KeyConnect+ (Dev)" first (which just fails silently if the app isn't
+  // installed) and then install via some other route entirely, so the
+  // code must already be in the clipboard the moment they land here.
+  copyJoinLinkToClipboard();
+  document.querySelectorAll('.btn-app').forEach(function (btn) {
+    btn.addEventListener('click', copyJoinLinkToClipboard);
+  });
+
+  // Wire up the button as a real anchor so WhatsApp allows the tap
+  window.addEventListener('load', function () {
+    copyJoinLinkToClipboard();
+    var appUrl  = buildAppUrl();
+    var btn     = document.getElementById('btn-open');
+    var status  = document.getElementById('status');
+    var hint    = document.getElementById('whatsapp-hint');
+
+    btn.href = appUrl;
+
+    if (isInAppBrowser()) {
+      // Show the "open in browser" hint — auto-redirect is blocked in WhatsApp
+      hint.style.display = 'block';
+    } else {
+      // Normal browser: auto-attempt to open the app
+      setTimeout(function () {
+        window.location.href = appUrl;
+        setTimeout(function () {
+          if (!document.hidden) {
+            status.textContent = 'App not installed — install the test build above.';
+          }
+        }, 1800);
+      }, 600);
+    }
+
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      copyJoinLinkToClipboard();
+      status.textContent = 'Opening KeyConnect+ (Dev)…';
+      window.location.href = appUrl;
+      setTimeout(function () {
+        if (!document.hidden) {
+          status.textContent = 'App not installed — install the test build above.';
+        }
+      }, 1800);
+    });
+  });
+</script>
+
+</body>
+</html>
